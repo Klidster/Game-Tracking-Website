@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>GameProg</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <header class="header">
+    <nav class="navbar">
+
+      <a href="#home" class="logo">
+        GameProg
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#backlog">My Games</a></li>
+        <li><a href="#add-game">Add Game</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+
+      <button class="menu-toggle" id="menu-toggle">☰</button>
+
+    </nav>
+  </header>
+
+
+  <main>
+
+    <section class="hero" id="home">
+
+      <div class="hero-text">
+
+        <p class="eyebrow">Track your progress</p>
+
+        <h1 class="hero-title">
+          GameProg
+        </h1>
+
+        <p>
+          Keep track of the games you want to play,
+          the games you're currently playing,
+          and the ones you've completed.
+        </p>
+
+        <a href="#backlog" class="hero-button">
+          View My Games
+        </a>
+
+      </div>
+
+    </section>
+
+
+    <section class="backlog" id="backlog">
+
+      <div class="section-heading">
+
+        <h2>My Games</h2>
+
+        <p>
+          Keep your game library organised by what you want to play,
+          what you're currently playing, and what you've completed.
+        </p>
+
+      </div>
+
+
+      <div class="filter-buttons">
+
+        <button class="filter-button active" data-filter="all">
+          All
+        </button>
+
+        <button class="filter-button" data-filter="want-to-play">
+          Want to Play
+        </button>
+
+        <button class="filter-button" data-filter="playing">
+          Playing
+        </button>
+
+        <button class="filter-button" data-filter="completed">
+          Completed
+        </button>
+
+      </div>
+
+
+      <div class="game-grid" id="game-grid">
+
+        <div class="game-card" data-status="playing">
+
+          <div class="game-image">
+            <span>🎮</span>
+          </div>
+
+          <div class="game-content">
+
+            <span class="game-status playing">
+              Playing
+            </span>
+
+            <h3>Baldur's Gate 3</h3>
+
+            <p>
+              Currently exploring Faerûn.
+            </p>
+
+            <div class="game-actions">
+              <button>Edit</button>
+              <button class="delete-button">Remove</button>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="game-card" data-status="want-to-play">
+
+          <div class="game-image">
+            <span>🎮</span>
+          </div>
+
+          <div class="game-content">
+
+            <span class="game-status want-to-play">
+              Want to Play
+            </span>
+
+            <h3>Clair Obscur: Expedition 33</h3>
+
+            <p>
+              Added to the backlog.
+            </p>
+
+            <div class="game-actions">
+              <button>Edit</button>
+              <button class="delete-button">Remove</button>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="game-card" data-status="completed">
+
+          <div class="game-image">
+            <span>🎮</span>
+          </div>
+
+          <div class="game-content">
+
+            <span class="game-status completed">
+              Completed
+            </span>
+
+            <h3>Elden Ring</h3>
+
+            <p class="rating">
+              ★★★★★
+            </p>
+
+            <div class="game-actions">
+              <button>Edit</button>
+              <button class="delete-button">Remove</button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="add-game" id="add-game">
+
+      <div class="section-heading">
+
+        <h2>Add a Game</h2>
+
+        <p>
+          Add a new game to your personal list.
+        </p>
+
+      </div>
+
+
+      <div class="app-card">
+
+        <form id="game-form">
+
+          <div class="form-group">
+
+            <label for="game-name">
+              Game Name
+            </label>
+
+            <input
+              type="text"
+              id="game-name"
+              placeholder="Enter game name..."
+              required
+            />
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="game-status">
+              Status
+            </label>
+
+            <select id="game-status">
+
+              <option value="want-to-play">
+                Want to Play
+              </option>
+
+              <option value="playing">
+                Playing
+              </option>
+
+              <option value="completed">
+                Completed
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="game-note">
+              Note
+            </label>
+
+            <textarea
+              id="game-note"
+              placeholder="Add a short note..."
+            ></textarea>
+
+          </div>
+
+
+          <button type="submit" class="full-button">
+            Add Game
+          </button>
+
+        </form>
+
+      </div>
+
+    </section>
+
+
+    <section class="about" id="about">
+
+      <div class="about-image">
+        <span>🎮</span>
+      </div>
+
+
+      <div class="about-content">
+
+        <h2>About GameProg</h2>
+
+        <p>
+          GameProg is a simple game tracking website designed to help
+          players organise the games they want to play, are currently
+          playing, and have completed.
+        </p>
+
+        <p>
+          The project is designed as a full-stack web application.
+          Game information will eventually be stored in a database so
+          that users can create and manage their own persistent game
+          library.
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <footer class="footer">
+
+    <p>
+      &copy; 2026 GameProg. All rights reserved.
+    </p>
+
+  </footer>
+
+
+  <script src="script.js"></script>
+
+</body>
+</html>
