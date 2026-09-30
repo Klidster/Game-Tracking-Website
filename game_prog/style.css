@@ -404,6 +404,19 @@ textarea {
   color: white;
 }
 
+.empty-message,
+.error-text {
+  grid-column: 1 / -1;
+
+  text-align: center;
+
+  color: #66667a;
+
+  padding: 2rem;
+
+  font-size: 1.05rem;
+}
+
 
 /* MOBILE */
 
