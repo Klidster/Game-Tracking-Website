@@ -4,21 +4,6 @@ const menuToggle =
 const navLinks =
   document.querySelector(".nav-links");
 
-
-if (menuToggle && navLinks) {
-
-  menuToggle.addEventListener("click", () => {
-
-    navLinks.classList.toggle("show");
-
-  });
-
-}
-
-
-
-// ELEMENTS
-
 const gameGrid =
   document.getElementById("game-grid");
 
@@ -28,10 +13,68 @@ const gameForm =
 const filterButtons =
   document.querySelectorAll(".filter-button");
 
+const logoutButton =
+  document.getElementById("logout-button");
+
 
 let games = [];
 
 let currentFilter = "all";
+
+let currentUser = null;
+
+
+
+// MOBILE MENU
+
+if (menuToggle && navLinks) {
+
+  menuToggle.addEventListener(
+    "click",
+    () => {
+
+      navLinks.classList.toggle("show");
+
+    }
+  );
+
+}
+
+
+
+// CHECK LOGIN
+
+async function checkUser() {
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .auth
+      .getUser();
+
+
+  if (
+    error ||
+    !data.user
+  ) {
+
+    window.location.href =
+      "login.html";
+
+    return false;
+
+  }
+
+
+  currentUser =
+    data.user;
+
+
+  return true;
+
+}
 
 
 
@@ -39,55 +82,59 @@ let currentFilter = "all";
 
 async function loadGames() {
 
-  try {
+  const loggedIn =
+    await checkUser();
 
-    const response = await fetch("/api/games");
+
+  if (!loggedIn) {
+
+    return;
+
+  }
 
 
-    if (!response.ok) {
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
 
-      throw new Error(
-        "Could not load games"
+      .from("games")
+
+      .select("*")
+
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
       );
 
-    }
 
-
-    games = await response.json();
-
-
-    renderGames();
-
-  } catch (error) {
+  if (error) {
 
     console.error(error);
 
-
     gameGrid.innerHTML = `
+
       <p class="error-text">
+
         Could not load your games.
+
       </p>
+
     `;
 
-  }
-
-}
-
-
-
-// CREATE STARS
-
-function createStars(rating) {
-
-  if (!rating) {
-
-    return "";
+    return;
 
   }
 
 
-  return "★".repeat(rating)
-    + "☆".repeat(5 - rating);
+  games =
+    data;
+
+
+  renderGames();
 
 }
 
@@ -97,21 +144,27 @@ function createStars(rating) {
 
 function formatStatus(status) {
 
-  if (status === "want-to-play") {
+  if (
+    status === "want-to-play"
+  ) {
 
     return "Want to Play";
 
   }
 
 
-  if (status === "playing") {
+  if (
+    status === "playing"
+  ) {
 
     return "Playing";
 
   }
 
 
-  if (status === "completed") {
+  if (
+    status === "completed"
+  ) {
 
     return "Completed";
 
@@ -124,29 +177,79 @@ function formatStatus(status) {
 
 
 
-// RENDER GAMES
+// CREATE STAR RATING
 
-function renderGames() {
+function createStars(rating) {
 
-  let filteredGames = games;
+  if (!rating) {
 
-
-  if (currentFilter !== "all") {
-
-    filteredGames = games.filter(
-      (game) =>
-        game.status === currentFilter
-    );
+    return "";
 
   }
 
 
-  if (filteredGames.length === 0) {
+  return (
+    "★".repeat(rating)
+    +
+    "☆".repeat(5 - rating)
+  );
+
+}
+
+
+
+// ESCAPE USER TEXT
+
+function escapeHTML(text) {
+
+  const div =
+    document.createElement("div");
+
+
+  div.textContent =
+    text || "";
+
+
+  return div.innerHTML;
+
+}
+
+
+
+// RENDER GAMES
+
+function renderGames() {
+
+  let filteredGames =
+    games;
+
+
+  if (
+    currentFilter !== "all"
+  ) {
+
+    filteredGames =
+      games.filter(
+        (game) =>
+          game.status ===
+          currentFilter
+      );
+
+  }
+
+
+  if (
+    filteredGames.length === 0
+  ) {
 
     gameGrid.innerHTML = `
+
       <p class="empty-message">
+
         No games found.
+
       </p>
+
     `;
 
     return;
@@ -155,81 +258,108 @@ function renderGames() {
 
 
   gameGrid.innerHTML =
-    filteredGames.map((game) => {
+    filteredGames
+      .map(
+        (game) => `
 
-      return `
-        <div
-          class="game-card"
-          data-status="${game.status}"
-        >
-
-          <div class="game-image">
-
-            <span>🎮</span>
-
-          </div>
+          <div
+            class="game-card"
+            data-status="${game.status}"
+          >
 
 
-          <div class="game-content">
+            <div class="game-image">
 
-            <span
-              class="game-status ${game.status}"
-            >
-              ${formatStatus(game.status)}
-            </span>
-
-
-            <h3>
-              ${escapeHTML(game.name)}
-            </h3>
-
-
-            ${
-              game.note
-                ? `
-                  <p>
-                    ${escapeHTML(game.note)}
-                  </p>
-                `
-                : ""
-            }
-
-
-            ${
-              game.rating
-                ? `
-                  <p class="rating">
-                    ${createStars(game.rating)}
-                  </p>
-                `
-                : ""
-            }
-
-
-            <div class="game-actions">
-
-              <button
-                onclick="editGame(${game.id})"
-              >
-                Edit
-              </button>
-
-
-              <button
-                class="delete-button"
-                onclick="deleteGame(${game.id})"
-              >
-                Remove
-              </button>
+              <span>
+                🎮
+              </span>
 
             </div>
 
+
+
+            <div class="game-content">
+
+
+              <span
+                class="game-status ${game.status}"
+              >
+
+                ${formatStatus(game.status)}
+
+              </span>
+
+
+
+              <h3>
+
+                ${escapeHTML(game.name)}
+
+              </h3>
+
+
+
+              ${
+                game.note
+                  ? `
+
+                    <p>
+
+                      ${escapeHTML(game.note)}
+
+                    </p>
+
+                  `
+                  : ""
+              }
+
+
+
+              ${
+                game.rating
+                  ? `
+
+                    <p class="rating">
+
+                      ${createStars(game.rating)}
+
+                    </p>
+
+                  `
+                  : ""
+              }
+
+
+
+              <div class="game-actions">
+
+
+                <button
+                  onclick="editGame(${game.id})"
+                >
+                  Edit
+                </button>
+
+
+                <button
+                  class="delete-button"
+                  onclick="deleteGame(${game.id})"
+                >
+                  Remove
+                </button>
+
+
+              </div>
+
+
+            </div>
+
+
           </div>
 
-        </div>
-      `;
-
-    }).join("");
+        `
+      )
+      .join("");
 
 }
 
@@ -237,112 +367,114 @@ function renderGames() {
 
 // ADD GAME
 
-if (gameForm) {
+gameForm.addEventListener(
+  "submit",
+  async (event) => {
 
-  gameForm.addEventListener(
-    "submit",
-    async (event) => {
-
-      event.preventDefault();
+    event.preventDefault();
 
 
-      const name =
-        document
-          .getElementById("game-name")
-          .value;
+    const name =
+      document
+        .getElementById(
+          "game-name"
+        )
+        .value
+        .trim();
 
 
-      const status =
-        document
-          .getElementById("game-status")
-          .value;
+    const status =
+      document
+        .getElementById(
+          "game-status"
+        )
+        .value;
 
 
-      const note =
-        document
-          .getElementById("game-note")
-          .value;
+    const note =
+      document
+        .getElementById(
+          "game-note"
+        )
+        .value
+        .trim();
 
 
-      const ratingValue =
-        document
-          .getElementById("game-rating")
-          .value;
+    const ratingValue =
+      document
+        .getElementById(
+          "game-rating"
+        )
+        .value;
 
 
-      const rating =
-        ratingValue
-          ? Number(ratingValue)
-          : null;
+    const rating =
+      ratingValue
+        ? Number(ratingValue)
+        : null;
 
 
-      try {
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
 
-        const response =
-          await fetch("/api/games", {
+        .from("games")
 
-            method: "POST",
+        .insert({
 
-            headers: {
+          user_id:
+            currentUser.id,
 
-              "Content-Type":
-                "application/json"
+          name,
 
-            },
+          status,
 
-            body: JSON.stringify({
+          note,
 
-              name,
-              status,
-              note,
-              rating
+          rating
 
-            })
+        })
 
-          });
+        .select()
 
-
-        const data =
-          await response.json();
+        .single();
 
 
-        if (!response.ok) {
+    if (error) {
 
-          throw new Error(
-            data.error ||
-            "Could not add game"
-          );
+      console.error(error);
 
-        }
+      alert(
+        "Could not add game."
+      );
 
-
-        games.unshift(data);
-
-
-        renderGames();
-
-
-        gameForm.reset();
-
-
-        document
-          .getElementById("backlog")
-          .scrollIntoView({
-            behavior: "smooth"
-          });
-
-      } catch (error) {
-
-        console.error(error);
-
-        alert(error.message);
-
-      }
+      return;
 
     }
-  );
 
-}
+
+    games.unshift(data);
+
+
+    renderGames();
+
+
+    gameForm.reset();
+
+
+    document
+      .getElementById("backlog")
+      .scrollIntoView({
+
+        behavior:
+          "smooth"
+
+      });
+
+  }
+);
 
 
 
@@ -352,7 +484,8 @@ async function deleteGame(id) {
 
   const game =
     games.find(
-      (game) => game.id === id
+      (game) =>
+        game.id === id
     );
 
 
@@ -376,45 +509,42 @@ async function deleteGame(id) {
   }
 
 
-  try {
+  const {
+    error
+  } =
+    await supabaseClient
 
-    const response =
-      await fetch(`/api/games/${id}`, {
+      .from("games")
 
-        method: "DELETE"
+      .delete()
 
-      });
-
-
-    const data =
-      await response.json();
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        data.error ||
-        "Could not remove game"
-      );
-
-    }
-
-
-    games =
-      games.filter(
-        (game) => game.id !== id
+      .eq(
+        "id",
+        id
       );
 
 
-    renderGames();
-
-  } catch (error) {
+  if (error) {
 
     console.error(error);
 
-    alert(error.message);
+    alert(
+      "Could not remove game."
+    );
+
+    return;
 
   }
+
+
+  games =
+    games.filter(
+      (game) =>
+        game.id !== id
+    );
+
+
+  renderGames();
 
 }
 
@@ -426,7 +556,8 @@ async function editGame(id) {
 
   const game =
     games.find(
-      (game) => game.id === id
+      (game) =>
+        game.id === id
     );
 
 
@@ -444,7 +575,9 @@ async function editGame(id) {
     );
 
 
-  if (newName === null) {
+  if (
+    newName === null
+  ) {
 
     return;
 
@@ -458,7 +591,9 @@ async function editGame(id) {
     );
 
 
-  if (newStatus === null) {
+  if (
+    newStatus === null
+  ) {
 
     return;
 
@@ -466,14 +601,20 @@ async function editGame(id) {
 
 
   const validStatuses = [
+
     "want-to-play",
+
     "playing",
+
     "completed"
+
   ];
 
 
   if (
-    !validStatuses.includes(newStatus)
+    !validStatuses.includes(
+      newStatus
+    )
   ) {
 
     alert(
@@ -492,7 +633,9 @@ async function editGame(id) {
     );
 
 
-  if (newNote === null) {
+  if (
+    newNote === null
+  ) {
 
     return;
 
@@ -506,25 +649,33 @@ async function editGame(id) {
     );
 
 
-  if (newRating === null) {
+  if (
+    newRating === null
+  ) {
 
     return;
 
   }
 
 
-  let rating = null;
+  let rating =
+    null;
 
 
-  if (newRating !== "") {
+  if (
+    newRating !== ""
+  ) {
 
-    rating = Number(newRating);
+    rating =
+      Number(newRating);
 
 
     if (
-      rating < 1 ||
-      rating > 5 ||
       Number.isNaN(rating)
+      ||
+      rating < 1
+      ||
+      rating > 5
     ) {
 
       alert(
@@ -538,53 +689,59 @@ async function editGame(id) {
   }
 
 
-  try {
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
 
-    const response =
-      await fetch(
-        `/api/games/${id}`,
-        {
+      .from("games")
 
-          method: "PUT",
+      .update({
 
-          headers: {
+        name:
+          newName.trim(),
 
-            "Content-Type":
-              "application/json"
+        status:
+          newStatus,
 
-          },
+        note:
+          newNote.trim(),
 
-          body: JSON.stringify({
+        rating
 
-            name: newName,
-            status: newStatus,
-            note: newNote,
-            rating
+      })
 
-          })
+      .eq(
+        "id",
+        id
+      )
 
-        }
-      );
+      .select()
 
-
-    const data =
-      await response.json();
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        data.error ||
-        "Could not update game"
-      );
-
-    }
+      .single();
 
 
-    games =
-      games.map((game) => {
+  if (error) {
 
-        if (game.id === id) {
+    console.error(error);
+
+    alert(
+      "Could not update game."
+    );
+
+    return;
+
+  }
+
+
+  games =
+    games.map(
+      (game) => {
+
+        if (
+          game.id === id
+        ) {
 
           return data;
 
@@ -593,74 +750,75 @@ async function editGame(id) {
 
         return game;
 
-      });
+      }
+    );
 
 
-    renderGames();
+  renderGames();
 
-  } catch (error) {
+}
 
-    console.error(error);
 
-    alert(error.message);
+
+// FILTERS
+
+filterButtons.forEach(
+  (button) => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        currentFilter =
+          button.dataset.filter;
+
+
+        filterButtons.forEach(
+          (filterButton) => {
+
+            filterButton
+              .classList
+              .remove(
+                "active"
+              );
+
+          }
+        );
+
+
+        button
+          .classList
+          .add(
+            "active"
+          );
+
+
+        renderGames();
+
+      }
+    );
 
   }
-
-}
-
-
-
-// FILTER GAMES
-
-filterButtons.forEach((button) => {
-
-  button.addEventListener(
-    "click",
-    () => {
-
-      currentFilter =
-        button.dataset.filter;
-
-
-      filterButtons.forEach(
-        (filterButton) => {
-
-          filterButton
-            .classList
-            .remove("active");
-
-        }
-      );
-
-
-      button
-        .classList
-        .add("active");
-
-
-      renderGames();
-
-    }
-  );
-
-});
+);
 
 
 
-// BASIC HTML SAFETY
+// LOGOUT
 
-function escapeHTML(text) {
+logoutButton.addEventListener(
+  "click",
+  async () => {
 
-  const div =
-    document.createElement("div");
+    await supabaseClient
+      .auth
+      .signOut();
 
 
-  div.textContent = text;
+    window.location.href =
+      "login.html";
 
-
-  return div.innerHTML;
-
-}
+  }
+);
 
 
 

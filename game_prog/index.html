@@ -1,60 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
   <title>GameProg</title>
 
-  <link rel="stylesheet" href="style.css" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    rel="stylesheet"
+    href="style.css"
+  />
+
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
 
   <link
     href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap"
     rel="stylesheet"
   >
+
 </head>
+
 
 <body>
 
+
   <header class="header">
+
     <nav class="navbar">
 
-      <a href="#home" class="logo">
+
+      <a
+        href="#home"
+        class="logo"
+      >
         GameProg
       </a>
 
+
       <ul class="nav-links">
-        <li><a href="#backlog">My Games</a></li>
-        <li><a href="#add-game">Add Game</a></li>
-        <li><a href="#about">About</a></li>
+
+        <li>
+          <a href="#backlog">
+            My Games
+          </a>
+        </li>
+
+        <li>
+          <a href="#add-game">
+            Add Game
+          </a>
+        </li>
+
+        <li>
+          <a href="#about">
+            About
+          </a>
+        </li>
+
+        <li>
+          <button
+            class="logout-button"
+            id="logout-button"
+          >
+            Logout
+          </button>
+        </li>
+
       </ul>
 
-      <button class="menu-toggle" id="menu-toggle">
+
+      <button
+        class="menu-toggle"
+        id="menu-toggle"
+      >
         ☰
       </button>
 
+
     </nav>
+
   </header>
+
 
 
   <main>
 
+
     <!-- HERO -->
 
-    <section class="hero" id="home">
+    <section
+      class="hero"
+      id="home"
+    >
+
 
       <div class="hero-text">
+
 
         <p class="eyebrow">
           Track your progress
         </p>
 
+
         <h1 class="hero-title">
           GameProg
         </h1>
+
 
         <p>
           Keep track of the games you want to play,
@@ -62,36 +130,52 @@
           and the ones you've completed.
         </p>
 
-        <a href="#backlog" class="hero-button">
+
+        <a
+          href="#backlog"
+          class="hero-button"
+        >
           View My Games
         </a>
 
+
       </div>
+
 
     </section>
 
 
+
     <!-- MY GAMES -->
 
-    <section class="backlog" id="backlog">
+    <section
+      class="backlog"
+      id="backlog"
+    >
+
 
       <div class="section-heading">
+
 
         <h2>
           My Games
         </h2>
+
 
         <p>
           Keep your game library organised by what you want to play,
           what you're currently playing, and what you've completed.
         </p>
 
+
       </div>
 
 
-      <!-- FILTER BUTTONS -->
+
+      <!-- FILTERS -->
 
       <div class="filter-buttons">
+
 
         <button
           class="filter-button active"
@@ -100,12 +184,14 @@
           All
         </button>
 
+
         <button
           class="filter-button"
           data-filter="want-to-play"
         >
           Want to Play
         </button>
+
 
         <button
           class="filter-button"
@@ -114,6 +200,7 @@
           Playing
         </button>
 
+
         <button
           class="filter-button"
           data-filter="completed"
@@ -121,50 +208,69 @@
           Completed
         </button>
 
+
       </div>
 
 
-      <!-- GAME CARDS ARE CREATED BY JAVASCRIPT -->
 
-      <div class="game-grid" id="game-grid">
+      <!-- GAMES LOADED FROM SUPABASE -->
 
-        <p class="empty-message" id="empty-message">
-          No games added yet.
+      <div
+        class="game-grid"
+        id="game-grid"
+      >
+
+        <p class="empty-message">
+          Loading games...
         </p>
 
       </div>
 
+
     </section>
+
 
 
     <!-- ADD GAME -->
 
-    <section class="add-game" id="add-game">
+    <section
+      class="add-game"
+      id="add-game"
+    >
+
 
       <div class="section-heading">
+
 
         <h2>
           Add a Game
         </h2>
 
+
         <p>
           Add a new game to your personal list.
         </p>
 
+
       </div>
+
 
 
       <div class="app-card">
 
+
         <form id="game-form">
+
 
           <!-- GAME NAME -->
 
           <div class="form-group">
 
+
             <label for="game-name">
               Game Name
             </label>
+
 
             <input
               type="text"
@@ -173,92 +279,117 @@
               required
             />
 
+
           </div>
+
 
 
           <!-- STATUS -->
 
           <div class="form-group">
 
+
             <label for="game-status">
               Status
             </label>
 
+
             <select id="game-status">
+
 
               <option value="want-to-play">
                 Want to Play
               </option>
 
+
               <option value="playing">
                 Playing
               </option>
+
 
               <option value="completed">
                 Completed
               </option>
 
+
             </select>
 
+
           </div>
+
 
 
           <!-- RATING -->
 
           <div class="form-group">
 
+
             <label for="game-rating">
               Rating
             </label>
 
+
             <select id="game-rating">
+
 
               <option value="">
                 No Rating
               </option>
 
+
               <option value="1">
                 1 Star
               </option>
+
 
               <option value="2">
                 2 Stars
               </option>
 
+
               <option value="3">
                 3 Stars
               </option>
+
 
               <option value="4">
                 4 Stars
               </option>
 
+
               <option value="5">
                 5 Stars
               </option>
 
+
             </select>
 
+
           </div>
+
 
 
           <!-- NOTE -->
 
           <div class="form-group">
 
+
             <label for="game-note">
               Note
             </label>
+
 
             <textarea
               id="game-note"
               placeholder="Add a short note..."
             ></textarea>
 
+
           </div>
 
 
-          <!-- SUBMIT BUTTON -->
+
+          <!-- SUBMIT -->
 
           <button
             type="submit"
@@ -267,16 +398,24 @@
             Add Game
           </button>
 
+
         </form>
 
+
       </div>
+
 
     </section>
 
 
+
     <!-- ABOUT -->
 
-    <section class="about" id="about">
+    <section
+      class="about"
+      id="about"
+    >
+
 
       <div class="about-image">
 
@@ -287,11 +426,14 @@
       </div>
 
 
+
       <div class="about-content">
+
 
         <h2>
           About GameProg
         </h2>
+
 
         <p>
           GameProg is a simple game tracking website designed
@@ -299,29 +441,52 @@
           are currently playing, and have completed.
         </p>
 
+
         <p>
-          Game information is stored using a backend database,
-          allowing users to add, edit, remove, and keep track
-          of their game library.
+          GameProg uses user authentication and a cloud database
+          so each player can maintain their own personal game library.
         </p>
+
 
       </div>
 
+
     </section>
+
 
   </main>
 
 
+
   <footer class="footer">
+
 
     <p>
       &copy; 2026 GameProg. All rights reserved.
     </p>
 
+
   </footer>
 
 
+
+  <!-- SUPABASE LIBRARY -->
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
+
+
+  <!-- YOUR SUPABASE CONFIG -->
+
+  <script src="supabase.js"></script>
+
+
+  <!-- MAIN WEBSITE JS -->
+
   <script src="script.js"></script>
 
+
 </body>
+
 </html>
