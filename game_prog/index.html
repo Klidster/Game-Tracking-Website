@@ -456,6 +456,135 @@
 
   </main>
 
+<!-- EDIT GAME MODAL -->
+
+<div class="modal" id="edit-modal">
+
+  <div class="modal-content">
+
+    <button
+      class="modal-close"
+      id="modal-close"
+    >
+      ×
+    </button>
+
+
+    <h2>
+      Edit Game
+    </h2>
+
+
+    <form id="edit-game-form">
+
+      <input
+        type="hidden"
+        id="edit-game-id"
+      />
+
+
+      <div class="form-group">
+
+        <label for="edit-game-name">
+          Game Name
+        </label>
+
+        <input
+          type="text"
+          id="edit-game-name"
+          required
+        />
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="edit-game-status">
+          Status
+        </label>
+
+        <select id="edit-game-status">
+
+          <option value="want-to-play">
+            Want to Play
+          </option>
+
+          <option value="playing">
+            Playing
+          </option>
+
+          <option value="completed">
+            Completed
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="edit-game-rating">
+          Rating
+        </label>
+
+        <select id="edit-game-rating">
+
+          <option value="">
+            No Rating
+          </option>
+
+          <option value="1">
+            1 Star
+          </option>
+
+          <option value="2">
+            2 Stars
+          </option>
+
+          <option value="3">
+            3 Stars
+          </option>
+
+          <option value="4">
+            4 Stars
+          </option>
+
+          <option value="5">
+            5 Stars
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="edit-game-note">
+          Note
+        </label>
+
+        <textarea
+          id="edit-game-note"
+        ></textarea>
+
+      </div>
+
+
+      <button
+        type="submit"
+        class="full-button"
+      >
+        Save Changes
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
 
 
   <footer class="footer">

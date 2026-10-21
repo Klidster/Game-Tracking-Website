@@ -16,6 +16,15 @@ const filterButtons =
 const logoutButton =
   document.getElementById("logout-button");
 
+const editModal =
+  document.getElementById("edit-modal");
+
+const modalClose =
+  document.getElementById("modal-close");
+
+const editGameForm =
+  document.getElementById("edit-game-form");
+
 
 let games = [];
 
@@ -367,114 +376,118 @@ function renderGames() {
 
 // ADD GAME
 
-gameForm.addEventListener(
-  "submit",
-  async (event) => {
+if (gameForm) {
 
-    event.preventDefault();
+  gameForm.addEventListener(
+    "submit",
+    async (event) => {
+
+      event.preventDefault();
 
 
-    const name =
+      const name =
+        document
+          .getElementById(
+            "game-name"
+          )
+          .value
+          .trim();
+
+
+      const status =
+        document
+          .getElementById(
+            "game-status"
+          )
+          .value;
+
+
+      const note =
+        document
+          .getElementById(
+            "game-note"
+          )
+          .value
+          .trim();
+
+
+      const ratingValue =
+        document
+          .getElementById(
+            "game-rating"
+          )
+          .value;
+
+
+      const rating =
+        ratingValue
+          ? Number(ratingValue)
+          : null;
+
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+
+          .from("games")
+
+          .insert({
+
+            user_id:
+              currentUser.id,
+
+            name,
+
+            status,
+
+            note,
+
+            rating
+
+          })
+
+          .select()
+
+          .single();
+
+
+      if (error) {
+
+        console.error(error);
+
+        alert(
+          "Could not add game."
+        );
+
+        return;
+
+      }
+
+
+      games.unshift(data);
+
+
+      renderGames();
+
+
+      gameForm.reset();
+
+
       document
-        .getElementById(
-          "game-name"
-        )
-        .value
-        .trim();
+        .getElementById("backlog")
+        .scrollIntoView({
 
+          behavior:
+            "smooth"
 
-    const status =
-      document
-        .getElementById(
-          "game-status"
-        )
-        .value;
-
-
-    const note =
-      document
-        .getElementById(
-          "game-note"
-        )
-        .value
-        .trim();
-
-
-    const ratingValue =
-      document
-        .getElementById(
-          "game-rating"
-        )
-        .value;
-
-
-    const rating =
-      ratingValue
-        ? Number(ratingValue)
-        : null;
-
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-
-        .from("games")
-
-        .insert({
-
-          user_id:
-            currentUser.id,
-
-          name,
-
-          status,
-
-          note,
-
-          rating
-
-        })
-
-        .select()
-
-        .single();
-
-
-    if (error) {
-
-      console.error(error);
-
-      alert(
-        "Could not add game."
-      );
-
-      return;
+        });
 
     }
+  );
 
-
-    games.unshift(data);
-
-
-    renderGames();
-
-
-    gameForm.reset();
-
-
-    document
-      .getElementById("backlog")
-      .scrollIntoView({
-
-        behavior:
-          "smooth"
-
-      });
-
-  }
-);
+}
 
 
 
@@ -550,9 +563,9 @@ async function deleteGame(id) {
 
 
 
-// EDIT GAME
+// OPEN EDIT MODAL
 
-async function editGame(id) {
+function editGame(id) {
 
   const game =
     games.find(
@@ -568,193 +581,202 @@ async function editGame(id) {
   }
 
 
-  const newName =
-    prompt(
-      "Game name:",
-      game.name
-    );
+  document
+    .getElementById("edit-game-id")
+    .value =
+      game.id;
 
 
-  if (
-    newName === null
-  ) {
+  document
+    .getElementById("edit-game-name")
+    .value =
+      game.name;
 
-    return;
 
-  }
+  document
+    .getElementById("edit-game-status")
+    .value =
+      game.status;
 
 
-  const newStatus =
-    prompt(
-      "Status: want-to-play, playing or completed",
-      game.status
-    );
+  document
+    .getElementById("edit-game-rating")
+    .value =
+      game.rating || "";
 
 
-  if (
-    newStatus === null
-  ) {
+  document
+    .getElementById("edit-game-note")
+    .value =
+      game.note || "";
 
-    return;
 
-  }
+  editModal.classList.add("show");
 
+}
 
-  const validStatuses = [
 
-    "want-to-play",
 
-    "playing",
+// SAVE EDITED GAME
 
-    "completed"
+if (editGameForm) {
 
-  ];
+  editGameForm.addEventListener(
+    "submit",
+    async (event) => {
 
+      event.preventDefault();
 
-  if (
-    !validStatuses.includes(
-      newStatus
-    )
-  ) {
 
-    alert(
-      "Status must be want-to-play, playing or completed."
-    );
+      const id =
+        Number(
+          document
+            .getElementById("edit-game-id")
+            .value
+        );
 
-    return;
 
-  }
+      const name =
+        document
+          .getElementById("edit-game-name")
+          .value
+          .trim();
 
 
-  const newNote =
-    prompt(
-      "Note:",
-      game.note || ""
-    );
+      const status =
+        document
+          .getElementById("edit-game-status")
+          .value;
 
 
-  if (
-    newNote === null
-  ) {
+      const note =
+        document
+          .getElementById("edit-game-note")
+          .value
+          .trim();
 
-    return;
 
-  }
+      const ratingValue =
+        document
+          .getElementById("edit-game-rating")
+          .value;
 
 
-  const newRating =
-    prompt(
-      "Rating from 1-5. Leave blank for no rating:",
-      game.rating || ""
-    );
+      const rating =
+        ratingValue
+          ? Number(ratingValue)
+          : null;
 
 
-  if (
-    newRating === null
-  ) {
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
 
-    return;
+          .from("games")
 
-  }
+          .update({
 
+            name,
 
-  let rating =
-    null;
+            status,
 
+            note,
 
-  if (
-    newRating !== ""
-  ) {
+            rating
 
-    rating =
-      Number(newRating);
+          })
 
+          .eq(
+            "id",
+            id
+          )
 
-    if (
-      Number.isNaN(rating)
-      ||
-      rating < 1
-      ||
-      rating > 5
-    ) {
+          .select()
 
-      alert(
-        "Rating must be between 1 and 5."
-      );
+          .single();
 
-      return;
 
-    }
+      if (error) {
 
-  }
+        console.error(error);
 
+        alert(
+          "Could not update game."
+        );
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-
-      .from("games")
-
-      .update({
-
-        name:
-          newName.trim(),
-
-        status:
-          newStatus,
-
-        note:
-          newNote.trim(),
-
-        rating
-
-      })
-
-      .eq(
-        "id",
-        id
-      )
-
-      .select()
-
-      .single();
-
-
-  if (error) {
-
-    console.error(error);
-
-    alert(
-      "Could not update game."
-    );
-
-    return;
-
-  }
-
-
-  games =
-    games.map(
-      (game) => {
-
-        if (
-          game.id === id
-        ) {
-
-          return data;
-
-        }
-
-
-        return game;
+        return;
 
       }
-    );
 
 
-  renderGames();
+      games =
+        games.map(
+          (game) => {
+
+            if (
+              game.id === id
+            ) {
+
+              return data;
+
+            }
+
+
+            return game;
+
+          }
+        );
+
+
+      renderGames();
+
+
+      editModal.classList.remove("show");
+
+    }
+  );
+
+}
+
+
+
+// CLOSE EDIT MODAL WITH X
+
+if (modalClose) {
+
+  modalClose.addEventListener(
+    "click",
+    () => {
+
+      editModal.classList.remove("show");
+
+    }
+  );
+
+}
+
+
+
+// CLOSE EDIT MODAL BY CLICKING OUTSIDE
+
+if (editModal) {
+
+  editModal.addEventListener(
+    "click",
+    (event) => {
+
+      if (
+        event.target === editModal
+      ) {
+
+        editModal.classList.remove("show");
+
+      }
+
+    }
+  );
 
 }
 
@@ -805,20 +827,24 @@ filterButtons.forEach(
 
 // LOGOUT
 
-logoutButton.addEventListener(
-  "click",
-  async () => {
+if (logoutButton) {
 
-    await supabaseClient
-      .auth
-      .signOut();
+  logoutButton.addEventListener(
+    "click",
+    async () => {
+
+      await supabaseClient
+        .auth
+        .signOut();
 
 
-    window.location.href =
-      "login.html";
+      window.location.href =
+        "login.html";
 
-  }
-);
+    }
+  );
+
+}
 
 
 
