@@ -75,12 +75,14 @@
         </li>
 
         <li>
+
           <button
             class="logout-button"
             id="logout-button"
           >
             Logout
           </button>
+
         </li>
 
       </ul>
@@ -172,7 +174,7 @@
 
 
 
-      <!-- FILTERS -->
+      <!-- FILTER BUTTONS -->
 
       <div class="filter-buttons">
 
@@ -213,7 +215,7 @@
 
 
 
-      <!-- GAMES LOADED FROM SUPABASE -->
+      <!-- GAME CARDS -->
 
       <div
         class="game-grid"
@@ -321,7 +323,10 @@
 
           <!-- RATING -->
 
-          <div class="form-group">
+          <div
+            class="form-group hidden-rating"
+            id="rating-group"
+          >
 
 
             <label for="game-rating">
@@ -389,8 +394,6 @@
 
 
 
-          <!-- SUBMIT -->
-
           <button
             type="submit"
             class="full-button"
@@ -456,135 +459,185 @@
 
   </main>
 
-<!-- EDIT GAME MODAL -->
-
-<div class="modal" id="edit-modal">
-
-  <div class="modal-content">
-
-    <button
-      class="modal-close"
-      id="modal-close"
-    >
-      ×
-    </button>
 
 
-    <h2>
-      Edit Game
-    </h2>
+  <!-- EDIT GAME MODAL -->
+
+  <div
+    class="modal"
+    id="edit-modal"
+  >
 
 
-    <form id="edit-game-form">
-
-      <input
-        type="hidden"
-        id="edit-game-id"
-      />
-
-
-      <div class="form-group">
-
-        <label for="edit-game-name">
-          Game Name
-        </label>
-
-        <input
-          type="text"
-          id="edit-game-name"
-          required
-        />
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label for="edit-game-status">
-          Status
-        </label>
-
-        <select id="edit-game-status">
-
-          <option value="want-to-play">
-            Want to Play
-          </option>
-
-          <option value="playing">
-            Playing
-          </option>
-
-          <option value="completed">
-            Completed
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label for="edit-game-rating">
-          Rating
-        </label>
-
-        <select id="edit-game-rating">
-
-          <option value="">
-            No Rating
-          </option>
-
-          <option value="1">
-            1 Star
-          </option>
-
-          <option value="2">
-            2 Stars
-          </option>
-
-          <option value="3">
-            3 Stars
-          </option>
-
-          <option value="4">
-            4 Stars
-          </option>
-
-          <option value="5">
-            5 Stars
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label for="edit-game-note">
-          Note
-        </label>
-
-        <textarea
-          id="edit-game-note"
-        ></textarea>
-
-      </div>
+    <div class="modal-content">
 
 
       <button
-        type="submit"
-        class="full-button"
+        class="modal-close"
+        id="modal-close"
       >
-        Save Changes
+        ×
       </button>
 
-    </form>
+
+      <h2>
+        Edit Game
+      </h2>
+
+
+      <form id="edit-game-form">
+
+
+        <input
+          type="hidden"
+          id="edit-game-id"
+        />
+
+
+        <!-- EDIT NAME -->
+
+        <div class="form-group">
+
+
+          <label for="edit-game-name">
+            Game Name
+          </label>
+
+
+          <input
+            type="text"
+            id="edit-game-name"
+            required
+          />
+
+
+        </div>
+
+
+
+        <!-- EDIT STATUS -->
+
+        <div class="form-group">
+
+
+          <label for="edit-game-status">
+            Status
+          </label>
+
+
+          <select id="edit-game-status">
+
+
+            <option value="want-to-play">
+              Want to Play
+            </option>
+
+
+            <option value="playing">
+              Playing
+            </option>
+
+
+            <option value="completed">
+              Completed
+            </option>
+
+
+          </select>
+
+
+        </div>
+
+
+
+        <!-- EDIT RATING -->
+
+        <div
+          class="form-group hidden-rating"
+          id="edit-rating-group"
+        >
+
+
+          <label for="edit-game-rating">
+            Rating
+          </label>
+
+
+          <select id="edit-game-rating">
+
+
+            <option value="">
+              No Rating
+            </option>
+
+
+            <option value="1">
+              1 Star
+            </option>
+
+
+            <option value="2">
+              2 Stars
+            </option>
+
+
+            <option value="3">
+              3 Stars
+            </option>
+
+
+            <option value="4">
+              4 Stars
+            </option>
+
+
+            <option value="5">
+              5 Stars
+            </option>
+
+
+          </select>
+
+
+        </div>
+
+
+
+        <!-- EDIT NOTE -->
+
+        <div class="form-group">
+
+
+          <label for="edit-game-note">
+            Note
+          </label>
+
+
+          <textarea
+            id="edit-game-note"
+          ></textarea>
+
+
+        </div>
+
+
+
+        <button
+          type="submit"
+          class="full-button"
+        >
+          Save Changes
+        </button>
+
+
+      </form>
+
+
+    </div>
+
 
   </div>
 
-</div>
 
 
   <footer class="footer">
@@ -599,19 +652,15 @@
 
 
 
-  <!-- SUPABASE LIBRARY -->
+  <!-- SUPABASE -->
 
   <script
     src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
   ></script>
 
 
-  <!-- YOUR SUPABASE CONFIG -->
-
   <script src="supabase.js"></script>
 
-
-  <!-- MAIN WEBSITE JS -->
 
   <script src="script.js"></script>
 

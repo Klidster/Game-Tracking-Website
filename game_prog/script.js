@@ -25,6 +25,18 @@ const modalClose =
 const editGameForm =
   document.getElementById("edit-game-form");
 
+const gameStatus =
+  document.getElementById("game-status");
+
+const ratingGroup =
+  document.getElementById("rating-group");
+
+const editGameStatus =
+  document.getElementById("edit-game-status");
+
+const editRatingGroup =
+  document.getElementById("edit-rating-group");
+
 
 let games = [];
 
@@ -36,13 +48,112 @@ let currentUser = null;
 
 // MOBILE MENU
 
-if (menuToggle && navLinks) {
+if (
+  menuToggle &&
+  navLinks
+) {
 
   menuToggle.addEventListener(
     "click",
     () => {
 
-      navLinks.classList.toggle("show");
+      navLinks.classList.toggle(
+        "show"
+      );
+
+    }
+  );
+
+}
+
+
+
+// RATING VISIBILITY
+
+function updateRatingVisibility(
+  statusElement,
+  ratingElement,
+  ratingSelect
+) {
+
+  if (
+    statusElement.value ===
+    "completed"
+  ) {
+
+    ratingElement.style.display =
+      "block";
+
+  } else {
+
+    ratingElement.style.display =
+      "none";
+
+
+    if (ratingSelect) {
+
+      ratingSelect.value = "";
+
+    }
+
+  }
+
+}
+
+
+
+// ADD GAME STATUS CHANGE
+
+if (
+  gameStatus &&
+  ratingGroup
+) {
+
+  gameStatus.addEventListener(
+    "change",
+    () => {
+
+      const ratingSelect =
+        document.getElementById(
+          "game-rating"
+        );
+
+
+      updateRatingVisibility(
+        gameStatus,
+        ratingGroup,
+        ratingSelect
+      );
+
+    }
+  );
+
+}
+
+
+
+// EDIT GAME STATUS CHANGE
+
+if (
+  editGameStatus &&
+  editRatingGroup
+) {
+
+  editGameStatus.addEventListener(
+    "change",
+    () => {
+
+      const ratingSelect =
+        document.getElementById(
+          "edit-game-rating"
+        );
+
+
+      updateRatingVisibility(
+        editGameStatus,
+        editRatingGroup,
+        ratingSelect
+      );
 
     }
   );
@@ -124,6 +235,7 @@ async function loadGames() {
 
     console.error(error);
 
+
     gameGrid.innerHTML = `
 
       <p class="error-text">
@@ -133,6 +245,7 @@ async function loadGames() {
       </p>
 
     `;
+
 
     return;
 
@@ -186,7 +299,7 @@ function formatStatus(status) {
 
 
 
-// CREATE STAR RATING
+// CREATE STARS
 
 function createStars(rating) {
 
@@ -261,6 +374,7 @@ function renderGames() {
 
     `;
 
+
     return;
 
   }
@@ -268,6 +382,7 @@ function renderGames() {
 
   gameGrid.innerHTML =
     filteredGames
+
       .map(
         (game) => `
 
@@ -325,7 +440,11 @@ function renderGames() {
 
 
               ${
+                game.status ===
+                  "completed"
+                &&
                 game.rating
+
                   ? `
 
                     <p class="rating">
@@ -335,6 +454,7 @@ function renderGames() {
                     </p>
 
                   `
+
                   : ""
               }
 
@@ -368,6 +488,7 @@ function renderGames() {
 
         `
       )
+
       .join("");
 
 }
@@ -419,10 +540,20 @@ if (gameForm) {
           .value;
 
 
-      const rating =
+      let rating =
+        null;
+
+
+      if (
+        status === "completed"
+        &&
         ratingValue
-          ? Number(ratingValue)
-          : null;
+      ) {
+
+        rating =
+          Number(ratingValue);
+
+      }
 
 
       const {
@@ -457,9 +588,11 @@ if (gameForm) {
 
         console.error(error);
 
+
         alert(
           "Could not add game."
         );
+
 
         return;
 
@@ -475,12 +608,20 @@ if (gameForm) {
       gameForm.reset();
 
 
+      updateRatingVisibility(
+        gameStatus,
+        ratingGroup,
+        document.getElementById(
+          "game-rating"
+        )
+      );
+
+
       document
         .getElementById("backlog")
         .scrollIntoView({
 
-          behavior:
-            "smooth"
+          behavior: "smooth"
 
         });
 
@@ -541,9 +682,11 @@ async function deleteGame(id) {
 
     console.error(error);
 
+
     alert(
       "Could not remove game."
     );
+
 
     return;
 
@@ -582,36 +725,54 @@ function editGame(id) {
 
 
   document
-    .getElementById("edit-game-id")
+    .getElementById(
+      "edit-game-id"
+    )
     .value =
       game.id;
 
 
   document
-    .getElementById("edit-game-name")
+    .getElementById(
+      "edit-game-name"
+    )
     .value =
       game.name;
 
 
   document
-    .getElementById("edit-game-status")
+    .getElementById(
+      "edit-game-status"
+    )
     .value =
       game.status;
 
 
   document
-    .getElementById("edit-game-rating")
+    .getElementById(
+      "edit-game-rating"
+    )
     .value =
       game.rating || "";
 
 
   document
-    .getElementById("edit-game-note")
+    .getElementById(
+      "edit-game-note"
+    )
     .value =
       game.note || "";
 
 
-  editModal.classList.add("show");
+  updateRatingVisibility(
+    editGameStatus,
+    editRatingGroup
+  );
+
+
+  editModal.classList.add(
+    "show"
+  );
 
 }
 
@@ -631,41 +792,61 @@ if (editGameForm) {
       const id =
         Number(
           document
-            .getElementById("edit-game-id")
+            .getElementById(
+              "edit-game-id"
+            )
             .value
         );
 
 
       const name =
         document
-          .getElementById("edit-game-name")
+          .getElementById(
+            "edit-game-name"
+          )
           .value
           .trim();
 
 
       const status =
         document
-          .getElementById("edit-game-status")
+          .getElementById(
+            "edit-game-status"
+          )
           .value;
 
 
       const note =
         document
-          .getElementById("edit-game-note")
+          .getElementById(
+            "edit-game-note"
+          )
           .value
           .trim();
 
 
       const ratingValue =
         document
-          .getElementById("edit-game-rating")
+          .getElementById(
+            "edit-game-rating"
+          )
           .value;
 
 
-      const rating =
+      let rating =
+        null;
+
+
+      if (
+        status === "completed"
+        &&
         ratingValue
-          ? Number(ratingValue)
-          : null;
+      ) {
+
+        rating =
+          Number(ratingValue);
+
+      }
 
 
       const {
@@ -702,9 +883,11 @@ if (editGameForm) {
 
         console.error(error);
 
+
         alert(
           "Could not update game."
         );
+
 
         return;
 
@@ -733,7 +916,9 @@ if (editGameForm) {
       renderGames();
 
 
-      editModal.classList.remove("show");
+      editModal.classList.remove(
+        "show"
+      );
 
     }
   );
@@ -742,7 +927,7 @@ if (editGameForm) {
 
 
 
-// CLOSE EDIT MODAL WITH X
+// CLOSE MODAL WITH X
 
 if (modalClose) {
 
@@ -750,7 +935,9 @@ if (modalClose) {
     "click",
     () => {
 
-      editModal.classList.remove("show");
+      editModal.classList.remove(
+        "show"
+      );
 
     }
   );
@@ -759,7 +946,7 @@ if (modalClose) {
 
 
 
-// CLOSE EDIT MODAL BY CLICKING OUTSIDE
+// CLOSE MODAL BY CLICKING OUTSIDE
 
 if (editModal) {
 
@@ -768,10 +955,13 @@ if (editModal) {
     (event) => {
 
       if (
-        event.target === editModal
+        event.target ===
+        editModal
       ) {
 
-        editModal.classList.remove("show");
+        editModal.classList.remove(
+          "show"
+        );
 
       }
 
@@ -842,6 +1032,25 @@ if (logoutButton) {
         "login.html";
 
     }
+  );
+
+}
+
+
+
+// INITIAL FORM STATE
+
+if (
+  gameStatus &&
+  ratingGroup
+) {
+
+  updateRatingVisibility(
+    gameStatus,
+    ratingGroup,
+    document.getElementById(
+      "game-rating"
+    )
   );
 
 }
