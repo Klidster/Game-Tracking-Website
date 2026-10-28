@@ -37,6 +37,9 @@ const editGameStatus =
 const editRatingGroup =
   document.getElementById("edit-rating-group");
 
+const userEmail =
+  document.getElementById("user-email");
+
 
 let games = [];
 
@@ -192,6 +195,14 @@ async function checkUser() {
     data.user;
 
 
+  if (userEmail) {
+
+    userEmail.textContent =
+      currentUser.email;
+
+  }
+
+
   return true;
 
 }
@@ -260,66 +271,6 @@ async function loadGames() {
 
 }
 
-
-
-// FORMAT STATUS
-
-function formatStatus(status) {
-
-  if (
-    status === "want-to-play"
-  ) {
-
-    return "Want to Play";
-
-  }
-
-
-  if (
-    status === "playing"
-  ) {
-
-    return "Playing";
-
-  }
-
-
-  if (
-    status === "completed"
-  ) {
-
-    return "Completed";
-
-  }
-
-
-  return status;
-
-}
-
-
-
-// CREATE STARS
-
-function createStars(rating) {
-
-  if (!rating) {
-
-    return "";
-
-  }
-
-
-  return (
-    "★".repeat(rating)
-    +
-    "☆".repeat(5 - rating)
-  );
-
-}
-
-
-
 // ESCAPE USER TEXT
 
 function escapeHTML(text) {
@@ -342,22 +293,11 @@ function escapeHTML(text) {
 
 function renderGames() {
 
-  let filteredGames =
-    games;
-
-
-  if (
-    currentFilter !== "all"
-  ) {
-
-    filteredGames =
-      games.filter(
-        (game) =>
-          game.status ===
-          currentFilter
-      );
-
-  }
+  const filteredGames =
+    GameLogic.filterGames(
+      games,
+      currentFilter
+    );
 
 
   if (
@@ -449,7 +389,7 @@ function renderGames() {
 
                     <p class="rating">
 
-                      ${createStars(game.rating)}
+                      ${GameLogic.createStars(game.rating)}
 
                     </p>
 
@@ -540,20 +480,11 @@ if (gameForm) {
           .value;
 
 
-      let rating =
-        null;
-
-
-      if (
-        status === "completed"
-        &&
-        ratingValue
-      ) {
-
-        rating =
-          Number(ratingValue);
-
-      }
+      const rating =
+        GameLogic.getRating(
+          status,
+          ratingValue
+        );
 
 
       const {
