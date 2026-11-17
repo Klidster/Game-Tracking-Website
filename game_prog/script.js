@@ -581,13 +581,26 @@ async function deleteGame(id) {
   }
 
 
-  const confirmed =
-    confirm(
-      `Remove "${game.name}" from your games?`
-    );
+  const result =
+    await Swal.fire({
+
+      title: "Remove game?",
+
+      text:
+        `"${game.name}" will be removed from your library.`,
+
+      icon: "warning",
+
+      showCancelButton: true,
+
+      confirmButtonText: "Remove",
+
+      cancelButtonText: "Cancel"
+
+    });
 
 
-  if (!confirmed) {
+  if (!result.isConfirmed) {
 
     return;
 
@@ -614,9 +627,11 @@ async function deleteGame(id) {
     console.error(error);
 
 
-    alert(
-      "Could not remove game."
-    );
+    Swal.fire({
+      title: "Something went wrong",
+      text: "The game could not be removed.",
+      icon: "error"
+    });
 
 
     return;
