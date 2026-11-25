@@ -3,7 +3,7 @@ const {
   createStars,
   getRating,
   filterGames
-} = require("./gameLogic");
+} = require("./public/gameLogic");
 
 
 
